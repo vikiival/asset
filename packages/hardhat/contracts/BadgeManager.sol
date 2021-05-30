@@ -44,6 +44,10 @@ contract BadgeManager is Ownable {
         uint256 newTokenId = tokenId.current();
         set(newTokenId, _title, _stake, _score);
     }
+
+    function create(string memory _title, uint256 _stake, uint8 _score) public onlyOwner {
+        _mint(_title, _stake, _score);
+    }
     
     function set(uint256 _id, string memory _title, uint256 _stake, uint8 _score) internal {
         Badge storage e = _badges[_id];
@@ -80,8 +84,8 @@ contract BadgeManager is Ownable {
        _;
     }
     
-    
-    function _revoke(address _to, uint256 _id) internal {
+    // TODO: internal
+    function _revoke(address _to, uint256 _id) public {
         require(_to != address(0), "ERC721: mint to the zero address");
         
         uint256 score = _collectedBadges[_to][_id];
