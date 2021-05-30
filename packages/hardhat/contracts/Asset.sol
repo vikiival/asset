@@ -14,8 +14,8 @@ contract Asset is ERC721, Ownable, IAsset {
         transferOwnership(owner);
     }
   
-    function setChild(IAccess _approval) public onlyOwner {
-        approval = _approval;
+    function setChild(address child) override public onlyOwner {
+        approval = IAccess(child);
     }
     
     

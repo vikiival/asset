@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import  '@openzeppelin/contracts/utils/Counters.sol';
 import './Asset.sol';
-import './Approval.sol';
+import './Access.sol';
 
 contract Builder {
     using Counters for Counters.Counter;
@@ -30,9 +30,9 @@ contract Builder {
     function create(string memory name, string memory symbol) public returns (address) {
         // address ownerAddress = msg.sender;
         Asset asset = new Asset(name, symbol, address(this));
-        Approval approval = new Approval(name, symbol, address(this));
-        asset.setChild(approval);
-        approval.setParent(asset);
+        Access approval = new Access(name, symbol, address(this));
+        asset.setChild(address(approval));
+        approval.setParent(address(asset));
         
         
     }

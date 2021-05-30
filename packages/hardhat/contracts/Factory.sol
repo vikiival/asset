@@ -46,9 +46,9 @@ contract Factory {
       return target;
     }
 
-    function _parenting(IParent asset, IChild access) private {
-        asset.setChild(access);
-        access.setParent(asset);
+    function _parenting(address asset, address access) private {
+        IParent(asset).setChild(access);
+        IChild(access).setParent(asset);
     }
 
 
