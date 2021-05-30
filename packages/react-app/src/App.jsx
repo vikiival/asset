@@ -274,7 +274,7 @@ function App(props) {
           onClick={() => {
             faucetTx({
               to: address,
-              value: parseEther("0.01"),
+              value: parseEther("0.1"),
             });
             setFaucetClicked(true);
           }}
@@ -300,6 +300,16 @@ function App(props) {
               to="/"
             >
               BadgeManager
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/factory">
+            <Link
+              onClick={() => {
+                setRoute("/factory");
+              }}
+              to="/factory"
+            >
+              Factory
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -353,7 +363,7 @@ function App(props) {
             */}
 
             <Contract
-              name="BadgeManager"
+              name="Factory"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}

@@ -76,7 +76,7 @@ export default function Contract({
   );
 
   const [refreshRequired, triggerRefresh] = useState(false);
-  const contractDisplay = displayedContractFunctions.map(fn => {
+  const contractDisplay = displayedContractFunctions.map((fn, i) => {
     if (isQueryable(fn)) {
       // If there are no inputs, just display return value
       return (
@@ -92,7 +92,7 @@ export default function Contract({
     // If there are inputs, display a form to allow users to provide these
     return (
       <FunctionForm
-        key={"FF" + fn.name}
+        key={"FF" + fn.name + String(i)}
         contractFunction={
           fn.stateMutability === "view" || fn.stateMutability === "pure"
             ? contract[fn.name]

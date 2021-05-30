@@ -4,17 +4,17 @@ pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './IAsset.sol';
-import './IApproval.sol';
+import './IAccess.sol';
 
 contract Asset is ERC721, Ownable, IAsset {
     uint256 carTokenId = 0;
     
-    IApproval approval;
+    IAccess approval;
     constructor(string memory name, string memory symbol, address owner) ERC721(name, symbol) public {
         transferOwnership(owner);
     }
   
-    function setChild(IApproval _approval) public onlyOwner {
+    function setChild(IAccess _approval) public onlyOwner {
         approval = _approval;
     }
     

@@ -1,1 +1,1 @@
-module.exports = ["BadgeManager","YourContract"];
+module.exports = ["AssetFactory","BadgeManager","Factory","YourContract"];

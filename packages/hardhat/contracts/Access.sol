@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './IAsset.sol';
-import './IApproval.sol';
+import './IAccess.sol';
 
-contract Approval is ERC721, Ownable, IApproval {
+contract Access is ERC721, Ownable, IAccess {
     
-     mapping (uint256 => uint256) private _approvalPeriods;
+     mapping (uint => uint) private _approvalPeriods;
     
     IAsset asset;
     constructor(string memory name, string memory symbol, address owner) ERC721(name, symbol) public {
@@ -18,9 +18,15 @@ contract Approval is ERC721, Ownable, IApproval {
     function setParent(IAsset _asset) public onlyOwner {
         asset = _asset;
     }
+
+
+    modifier onlyParent() {
+       require(msg.sender == isChildFor(), "Only parent can manipulate");
+       _;
+    }
     
     
-    function create(address renter, uint256 carTokenId, uint256 period) public override returns (uint256) {
+    function create(address renter, uint carTokenId, uint period) public override onlyParent returns (uint) {
         _mint(renter, carTokenId);
         if (period > 1) {
             _approvalPeriods[carTokenId] = block.timestamp + period;    
@@ -33,8 +39,9 @@ contract Approval is ERC721, Ownable, IApproval {
         
     }
     
-    function finish(uint256 tokenId) public view override returns (uint256) {
-        
+    function finish(uint accessId) public view override onlyParent returns (uint) {
+        _rentingPeriods[accessId] = 0;
+        _burn(lockTokenId);
     }
     
     function isChildFor() public view override returns (address) {

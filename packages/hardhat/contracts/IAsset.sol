@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import './IParent.sol';
 
-interface IAsset {
+interface IAsset is IParent {
     function isAvailable(uint256 tokenId) external view returns (bool);
     function create(string memory tokenURI) external returns (uint256);
     function rent(uint256 tokenId) external view returns (uint256);
