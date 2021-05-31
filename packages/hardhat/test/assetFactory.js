@@ -29,8 +29,7 @@ describe("AssetFactory", function () {
     });
 
     it("Can produce Asset", async function () {
-      expect(await myContract.canProduce(0x87f6074b)).to.be.equal(true);
+      expect(await myContract.canProduce(0x8b9aa81d)).to.be.equal(true);
     });
-
   });
 });

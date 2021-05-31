@@ -39,4 +39,9 @@ contract AccessFactory is IERC165, IAbstractFactory {
         return interfaceId == type(IAbstractFactory).interfaceId;
     }
 
+
+    function a() public view returns(bytes4) {
+        return type(IAccess).interfaceId;
+    }
+
 }

@@ -23,6 +23,10 @@ contract Asset is ERC721, Ownable, IAsset {
     constructor(string memory name, string memory symbol, address owner) ERC721(name, symbol) public {
         transferOwnership(owner);
     }
+
+    function currentId() public view returns (uint) {
+        return assetId.current();
+    }
   
     function setChild(address child) override public onlyOwner {
         access = IAccess(child);
@@ -51,7 +55,7 @@ contract Asset is ERC721, Ownable, IAsset {
         return access.create(_to, _id, _length);
     }
 
-      function _denyAccess(uint256 _id, address _to, uint _length) internal returns (uint) {
+      function _denyAccess(uint256 _id) internal returns (uint) {
         return access.finish(_id);
     }
 
@@ -67,7 +71,7 @@ contract Asset is ERC721, Ownable, IAsset {
         require(msg.value >= 0, "Not enough money to rent");
 
 
-        uint accessToken = _approveFor(tokenId, msg.sender, length);
+        uint accessToken = _approveFor(tokenId, msg.sender, _minutes);
         _used[tokenId] = accessToken;
         emit Rent(tokenId, accessToken, length);
     }
@@ -78,8 +82,8 @@ contract Asset is ERC721, Ownable, IAsset {
 
     function finish(uint256 tokenId) public created(tokenId) {
         uint accessToken = _used[tokenId];
-
-
+        // require(access.ownerOf(accessToken) == msg.sender, "Only Owner can finish");
+        access.finish(accessToken);
     }
 
     modifier onlyAssetOwner(uint256 _id) {
@@ -94,6 +98,5 @@ contract Asset is ERC721, Ownable, IAsset {
     
     function rewardAt()  public view override returns (address) {
         return address(0);
-    }
-    
+    } 
 }

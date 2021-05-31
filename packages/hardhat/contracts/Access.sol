@@ -34,14 +34,27 @@ contract Access is ERC721, Ownable, IAccess {
         tokenId.increment();
         uint256 lockTokenId = tokenId.current();
         require(period > 0, "Invalid time period");
-
-        _accessPeriods[lockTokenId] = period == 1 ? 1 : block.timestamp + period * 1 minutes;
+        // block.timestamp +
+        _accessPeriods[lockTokenId] = period == 1 ? 1 : period * 1 minutes;
         _mint(renter, lockTokenId);
         _assetTokens[lockTokenId] = carTokenId;
         
 
         return lockTokenId;
         
+    }
+
+    function currentId() public view returns (uint) {
+        return tokenId.current();
+    }
+
+    function accessPeriod(uint _id) public view created(_id) returns (uint) {
+        return _accessPeriods[_id];
+    }
+
+
+    function assetFor(uint _id) public view created(_id) returns (uint) {
+        return _assetTokens[_id];
     }
     
     function finish(uint accessId) public override onlyParent created(accessId) returns (uint) {

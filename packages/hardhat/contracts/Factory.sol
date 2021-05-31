@@ -17,11 +17,12 @@ contract Factory {
         string symbol;
     } 
     
-    bytes4 _assetInterface = 0x87f6074b;
+    bytes4 _assetInterface = 0x8b9aa81d;
+    bytes4 _accessInterface = 0x78c1867b;
     address _ass;
     
     event AfterBuild(address indexed tokenAddress);
-    event AfterBuild(address indexed asset, address indexed tokenAddress);
+    event MultiBuild(address indexed asset, address indexed tokenAddress);
     // constructor() public {
     //     // factory = Factory(_factoryAddr);
     // }
@@ -42,13 +43,13 @@ contract Factory {
       return asset;
     }
 
-    function createTwo(address builder, string memory name, string memory symbol, address access) public returns (address) {
+    function createTwo(address builder, string memory name, string memory symbol, address accessBuilder) public {
       Config memory _asset = Config(builder, name, symbol);
-      Config memory _access = Config(access, name, symbol);
+      Config memory _access = Config(accessBuilder, name, symbol);
       address asset = _create(_asset, _assetInterface);
-      emit AfterBuild(asset);
-      _ass = asset;
-      return asset;
+      address access = _create(_access, _accessInterface);
+      _parenting(asset, access);
+      emit MultiBuild(asset, access);
     }
 
     function _create(Config memory _config, bytes4 _requiredInterface) private returns (address) {
