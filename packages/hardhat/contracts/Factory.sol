@@ -18,8 +18,10 @@ contract Factory {
     } 
     
     bytes4 _assetInterface = 0x87f6074b;
+    address _ass;
     
-    event AfterBuild(address tokenAddress);
+    event AfterBuild(address indexed tokenAddress);
+    event AfterBuild(address indexed asset, address indexed tokenAddress);
     // constructor() public {
     //     // factory = Factory(_factoryAddr);
     // }
@@ -32,10 +34,20 @@ contract Factory {
     // function create(Config calldata _asset, Config calldata _access) public returns (address) {
     // }
 
-
     function create(address builder, string memory name, string memory symbol) public returns (address) {
       Config memory _asset = Config(builder, name, symbol);
       address asset = _create(_asset, _assetInterface);
+      emit AfterBuild(asset);
+      _ass = asset;
+      return asset;
+    }
+
+    function createTwo(address builder, string memory name, string memory symbol, address access) public returns (address) {
+      Config memory _asset = Config(builder, name, symbol);
+      Config memory _access = Config(access, name, symbol);
+      address asset = _create(_asset, _assetInterface);
+      emit AfterBuild(asset);
+      _ass = asset;
       return asset;
     }
 

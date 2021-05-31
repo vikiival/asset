@@ -15,7 +15,7 @@ describe("My Dapp", function () {
     });
 
     describe("setPurpose()", function () {
-      it("Should be able to set a new purpose", async function () {
+      it("set a new purpose", async function () {
         const newPurpose = "Test Purpose";
 
         await myContract.setPurpose(newPurpose);

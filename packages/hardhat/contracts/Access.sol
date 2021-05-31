@@ -1,14 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/Counters.sol";
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import './IAsset.sol';
 import './IAccess.sol';
 
 contract Access is ERC721, Ownable, IAccess {
+    using Counters for Counters.Counter;
+    Counters.Counter private tokenId;
     
      mapping (uint => uint) private _accessPeriods;
+     mapping (uint => uint) private _assetTokens;
     
     address asset;
     constructor(string memory name, string memory symbol, address owner) ERC721(name, symbol) public {
@@ -26,29 +30,40 @@ contract Access is ERC721, Ownable, IAccess {
     }
     
     
-    function create(address renter, uint carTokenId, uint period) public override onlyParent returns (uint) {
-        _mint(renter, carTokenId);
-        if (period > 1) {
-            _accessPeriods[carTokenId] = block.timestamp + period;    
-        } else {
-            // TODO: need to chceck if is car owner;
-            _accessPeriods[carTokenId] = 0;    
-        }
+    function create(address renter, uint carTokenId, uint period) public override onlyParent returns (uint) {    
+        tokenId.increment();
+        uint256 lockTokenId = tokenId.current();
+        require(period > 0, "Invalid time period");
+
+        _accessPeriods[lockTokenId] = period == 1 ? 1 : block.timestamp + period * 1 minutes;
+        _mint(renter, lockTokenId);
+        _assetTokens[lockTokenId] = carTokenId;
         
-        return carTokenId;
+
+        return lockTokenId;
         
     }
     
-    function finish(uint accessId) public override onlyParent returns (uint) {
+    function finish(uint accessId) public override onlyParent created(accessId) returns (uint) {
+        _assetTokens[accessId] = 0;
         _accessPeriods[accessId] = 0;
         _burn(accessId);
+        return accessId;
     }
     
     function isChildFor() public view override returns (address) {
         return address(asset);
     }
+
+    function canAccessFor(uint _id) public view created(_id) returns (uint) {
+        require(_exists(_id), "ERC721: operator query for nonexistent token");
+        return _accessPeriods[_id];
+    }
     
-  
+    modifier created(uint _id) {
+       require(_exists(_id), "ERC721: operator query for nonexistent token");
+       _;
+    }
   
   
   

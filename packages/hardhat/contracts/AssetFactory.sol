@@ -26,7 +26,9 @@ contract AssetFactory is IERC165, IAbstractFactory {
         Asset asset = new Asset(name, symbol, msg.sender);
         // Approval approval = new Approval(name, symbol, address(this));
         // asset.setChild(approval);
-        // approval.setParent(asset); 
+        // approval.setParent(asset);
+
+        emit AfterBuild(address(asset));
         return address(asset);
         
     }
